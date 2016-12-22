@@ -21,6 +21,7 @@
         }
 
         update() {
+          this.props.onChange(this.input.value);
           this.setState({query: this.input.value})
         }
 
@@ -29,6 +30,7 @@
             <div>
               <input ref={(input) => this.input = input} onChange={this.update} />
               <p>{this.state.query}</p>
+              <p>{this.props.name}</p>
             </div>
           );
         }
@@ -46,6 +48,10 @@
           console.log(this.title);
         }
 
+        logValue(value) {
+          console.log(value);
+        }
+
         render() {
           return (
             <div>
@@ -55,7 +61,7 @@
               >
               Hello, {this.state.name} !
               </h1>
-              <SearchComponent />
+              <SearchComponent name={this.state.name} onChange={this.logValue} />
             </div>
           );
         }

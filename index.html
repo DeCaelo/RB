@@ -13,21 +13,37 @@
     <script type="text/babel">
       var mountNode = document.getElementById('mountNode');
 
-      class MyComponent extends React.Component {
+      class SearchComponent extends React.Component {
         constructor() {
           super();
-          this.state = {name: "John", query: ""};
-          this.changeName = this.changeName.bind(this);
+          this.state = {query: ""};
           this.update = this.update.bind(this);
+        }
+
+        update() {
+          this.setState({query: this.input.value})
+        }
+
+        render() {
+          return (
+            <div>
+              <input ref={(input) => this.input = input} onChange={this.update} />
+              <p>{this.state.query}</p>
+            </div>
+          );
+        }
+      }
+
+      class MainComponent extends React.Component {
+        constructor() {
+          super();
+          this.state = {name: "John"};
+          this.changeName = this.changeName.bind(this);
         }
 
         changeName() {
           this.setState({name: "Alice"});
           console.log(this.title);
-        }
-
-        update() {
-          this.setState({query: this.input.value})
         }
 
         render() {
@@ -39,14 +55,13 @@
               >
               Hello, {this.state.name} !
               </h1>
-              <input ref={(input) => this.input = input} onChange={this.update} />
-              <p>{this.state.query}</p>
+              <SearchComponent />
             </div>
           );
         }
       }
 
-      ReactDOM.render(<MyComponent name="Jane" color="blue" />, mountNode);
+      ReactDOM.render(<MainComponent name="Jane" color="blue" />, mountNode);
     </script>
   </body>
 </html>

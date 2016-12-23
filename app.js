@@ -37,11 +37,15 @@ class AddComponent extends React.Component {
 }
 
 class MainComponent extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = MainComponent.getData();
         this.changeName = this.changeName.bind(this);
         this.addItem = this.addItem.bind(this);
+    }
+
+    componentWillMount() {
+      this.props.history.push('/users');
     }
 
     static getData() {

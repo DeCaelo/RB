@@ -5,141 +5,16 @@
     <title>Hello React!</title>
     <script src="https://unpkg.com/react@15.4.1/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15.4.1/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/react-router@2.8.1/umd/ReactRouter.min.js"></script>
     <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
     <style type="text/css">
       .hidden { display:none; }
+      .active { color: green; }
     </style>
   </head>
   <body>
     <div id="mountNode"></div>
 
-    <script type="text/babel">
-      var mountNode = document.getElementById('mountNode');
-
-      class AddComponent extends React.Component {
-        // avant le rendu, peut écraser le state avec un setState
-        componentWillMount() {
-          console.log('componentWillMount');
-        }
-
-        // après le rendu, on accède aux refs
-        componentDidMount() {
-          console.log('componentDidMount');
-        }
-
-        // à la mise à jour des props, on peut aussi faire un setState sans rendu supplémentaire
-        componentWillReceiveProps() {
-          console.log('componentWillReceiveProps');
-        }
-
-        // à la mise à jour props ou state, on peut retourner false pour ne pas faire de rendu
-        shouldComponentUpdate() {
-          console.log('shouldComponentUpdate');
-
-          return true;
-        }
-
-        // à la mise à jour avant le rendu, on peut préparer avant le rendu
-        componentWillUpdate() {
-          console.log('componentWillUpdate');
-        }
-
-        // après le rendu, on accède au nouveau DOM
-        componentDidUpdate() {
-          console.log('componentDidUpdate');
-        }
-
-        // après le démontage, on peut faire du nettoyage ici
-        componentWillUnmount() {
-          console.log('componentWillUnmount');
-        }
-
-        constructor() {
-          super();
-          console.log('constructor');
-          this.update = this.update.bind(this);
-          this.submit = this.submit.bind(this);
-        }
-
-        update() {
-          this.setState({query: this.input.value});
-        }
-
-        submit(e) {
-          e.preventDefault();
-          this.props.onSubmit({task: this.props.name + ' ' + this.input.value});
-          this.input.value = "";
-        }
-
-        render() {
-          return (
-            <form onSubmit={this.submit}>
-              <h2>Assigner une tâche :</h2>
-              <input ref={(input) => this.input = input} onChange={this.update} placeholder="doit faire ..." />
-              <button>Ajouter</button>
-            </form>
-          );
-        }
-      }
-
-      class MainComponent extends React.Component {
-        constructor() {
-          super();
-          this.state = MainComponent.getData();
-          this.changeName = this.changeName.bind(this);
-          this.addItem = this.addItem.bind(this);
-        }
-
-        static getData() {
-          return {actual: "Julien", users: ["Julien", "Christophe", "Roby"], items: []};
-        }
-
-        changeName(key) {
-          this.setState({actual: this.state.users[key]});
-        }
-
-        addItem(item) {
-          this.setState({items: this.state.items.concat([item])});
-        }
-
-        render() {
-          return (
-            <div>
-              <h1
-                style={{color: this.props.color}}
-              >
-                Tâche pour {this.state.actual}!
-              </h1>
-
-              <h2>Choisir un membre :</h2>
-              <ul>
-                {this.state.users.map((user, i) => {
-                  var change = this.changeName.bind(this, i);
-                  return <li key={user} onClick={change}>{user}</li>;
-                })}
-              </ul>
-
-              <h2 className={this.state.items.length ? '' : 'hidden'}>Tâches :</h2>
-              <ul>
-                {this.state.items.map((item, i) => {
-                  return <li key={i}>{item.task}</li>;
-                })}
-              </ul>
-
-              <AddComponent onSubmit={this.addItem} name={this.state.actual} />
-            </div>
-          );
-        }
-      }
-      // propriété par défaut
-      MainComponent.defaultProps = {color: 'red'};
-      // type propriété
-      MainComponent.propTypes = {
-        color: React.PropTypes.string
-      }
-
-      let MainComponentElement = React.createElement(MainComponent, {color: "blue"});
-      ReactDOM.render(MainComponentElement, mountNode);
-    </script>
+    <script type="text/babel" src="app.js"></script>
   </body>
 </html>

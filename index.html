@@ -106,7 +106,7 @@
           return (
             <div>
               <h1
-                style={{color: this.props.color ? this.props.color : 'red'}}
+                style={{color: this.props.color}}
               >
                 Tâche pour {this.state.actual}!
               </h1>
@@ -130,6 +130,12 @@
             </div>
           );
         }
+      }
+      // propriété par défaut
+      MainComponent.defaultProps = {color: 'red'};
+      // type propriété
+      MainComponent.propTypes = {
+        color: React.PropTypes.string
       }
 
       let MainComponentElement = React.createElement(MainComponent, {color: "blue"});

@@ -1,13 +1,18 @@
-var mountNode = document.getElementById('mountNode');
+var mountNode = document.querySelector('#mountNode');
 
 // Router declarations
-var Router = ReactRouter.Router;
-var Route = ReactRouter.Route;
-var DefaultRoute = ReactRouter.DefaultRoute;
-var Link = ReactRouter.Link;
-var RouteHandler = ReactRouter.RouteHandler;
-var IndexRoute = ReactRouter.IndexRoute;
+var
+    Router = ReactRouter.Router,
+    Route = ReactRouter.Route,
+    DefaultRoute = ReactRouter.DefaultRoute,
+    Link = ReactRouter.Link,
+    RouteHandler = ReactRouter.RouteHandler,
+    IndexRoute = ReactRouter.IndexRoute
+;
 
+/**
+ *
+ */
 class AddComponent extends React.Component {
     constructor() {
         super();
@@ -36,6 +41,9 @@ class AddComponent extends React.Component {
     }
 }
 
+/**
+ *
+ */
 class MainComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -44,16 +52,20 @@ class MainComponent extends React.Component {
         this.addItem = this.addItem.bind(this);
     }
 
-    componentWillMount() {
-      this.props.history.push('/users');
-    }
-
     static getData() {
-        return {actual: "Julien", users: ["Julien", "Christophe", "Roby"], items: []};
+        return {
+            actual: "Julien",
+            users: [
+                {name: "Julien", role: "lead-dev", age: 34},
+                {name: "Christophe", role: "dev junior", age: 24},
+                {name: "Roby", role: "dev junior", age: 23}
+            ],
+            items: []
+        };
     }
 
     changeName(key) {
-        this.setState({actual: this.state.users[key]});
+        this.setState({actual: this.state.users[key].name});
     }
 
     addItem(item) {
@@ -72,17 +84,17 @@ class MainComponent extends React.Component {
 
                 <h2>Choisir un membre :</h2>
                 <ul>
-                {this.state.users.map((user, i) => {
-                    var change = this.changeName.bind(this, i);
-                    return <li key={user} onClick={change}>{user}</li>;
-                })}
+                    {this.state.users.map((user, i) => {
+                        var change = this.changeName.bind(this, i);
+                        return <li key={i} onClick={change}>{user.name}</li>;
+                    })}
                 </ul>
 
                 <h2 className={this.state.items.length ? '' : 'hidden'}>Tâches :</h2>
                 <ul>
-                {this.state.items.map((item, i) => {
-                    return <li key={i}>{item.task}</li>;
-                })}
+                    {this.state.items.map((item, i) => {
+                        return <li key={i}>{item.task}</li>;
+                    })}
                 </ul>
 
                 <AddComponent onSubmit={this.addItem} name={this.state.actual} />
@@ -91,65 +103,80 @@ class MainComponent extends React.Component {
     }
 }
 
+/**
+ *
+ */
 class UsersComponent extends React.Component {
     render() {
-      return (
-        <div>
-          <MenuComponent />
-          <div>
-            <h1>Utilisateurs</h1>
-            <p>... Liste ...</p>
-          </div>
-        </div>
+        return (
+            <div>
+                <MenuComponent />
+                <div>
+                    <h1>Utilisateurs</h1>
+                    <ul>
+                        {MainComponent.getData().users.map((user, i) => {
+                            return <li key={i}><Link to={`users/${i}`}>{user.name}</Link></li>;
+                        })}
+                    </ul>
+                </div>
+            </div>
         );
     }
 }
 
+/**
+ *
+ */
 class UserComponent extends React.Component {
     constructor(props) {
-      super(props);
+        super(props);
 
-      this.getTasks = props.location.query.getTasks;
-      this.name = props.routeParams.name;
+        this.user = MainComponent.getData().users[props.routeParams.id];
     }
 
     render() {
-      return (
-        <div>
-          <MenuComponent />
-          <div>
-            <h1>Utilisateur</h1>
-            <p>{this.name}</p>
-          </div>
-        </div>
+        return (
+            <div>
+                <MenuComponent />
+                <div>
+                    <h1>Fiche de {this.user.name}</h1>
+                    <p>{this.user.role}</p>
+                    <p>{this.user.age}ans</p>
+                </div>
+            </div>
         );
     }
 }
 
+/**
+ *
+ */
 class MenuComponent extends React.Component {
-   render() {
-      return (
-        <ul>
-          <li><Link to={`/`} activeClassName="active">Accueil</Link></li>
-          <li><Link to={`/users`} activeClassName="active">Utilisateurs</Link></li>
-          <li><Link to={{pathname: `/users/user`, query: { getTasks: true }}} activeClassName="active">Utilisateur</Link></li>
-        </ul>
+    render() {
+        return (
+            <ul>
+                <li><Link to={`/`} activeClassName="active">Home</Link></li>
+                <li><Link to={`/users`} activeClassName="activeUser">Utilisateurs</Link></li>
+                <li><Link to={{pathname: `/users/user`, query: { getTasks: false }}} activeClassName="activeUser">Un seul utilisateur</Link></li>
+            </ul>
         );
     }
 }
 
-MainComponent.defaultProps = {color: 'blue'};
+MainComponent.defaultProps = {
+    color: 'blue'
+};
 
 MainComponent.propTypes = {
-color: React.PropTypes.string.isRequired
+    color: React.PropTypes.string.isRequired
 };
 
 ReactDOM.render((
     <Router>
         <Route path="/" component={MainComponent} />
-        <Route path="users">
+        <Route name="users" path="users">
             <IndexRoute component={UsersComponent} />
-            <Route path=":name" component={UserComponent} />
+            <Route path=":id" component={UserComponent} />
         </Route>
     </Router>
 ), mountNode);

@@ -85,9 +85,13 @@
       class MainComponent extends React.Component {
         constructor() {
           super();
-          this.state = {actual: "Julien", users: ["Julien", "Christophe", "Roby"], items: []};
+          this.state = MainComponent.getData();
           this.changeName = this.changeName.bind(this);
           this.addItem = this.addItem.bind(this);
+        }
+
+        static getData() {
+          return {actual: "Julien", users: ["Julien", "Christophe", "Roby"], items: []};
         }
 
         changeName(key) {
@@ -128,7 +132,8 @@
         }
       }
 
-      ReactDOM.render(<MainComponent color="blue" />, mountNode);
+      let MainComponentElement = React.createElement(MainComponent, {color: "blue"});
+      ReactDOM.render(MainComponentElement, mountNode);
     </script>
   </body>
 </html>

@@ -105,6 +105,7 @@ class UserComponent extends React.Component {
     constructor(props) {
       super(props);
 
+      this.getTasks = props.location.query.getTasks;
       this.name = props.routeParams.name;
     }
 
@@ -127,7 +128,7 @@ class MenuComponent extends React.Component {
         <ul>
           <li><Link to={`/`} activeClassName="active">Accueil</Link></li>
           <li><Link to={`/users`} activeClassName="active">Utilisateurs</Link></li>
-          <li><Link to={`/users/user`} activeClassName="active">Utilisateur</Link></li>
+          <li><Link to={{pathname: `/users/user`, query: { getTasks: true }}} activeClassName="active">Utilisateur</Link></li>
         </ul>
         );
     }

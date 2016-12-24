@@ -26,7 +26,8 @@ class AddComponent extends React.Component {
 
     submit(e) {
         e.preventDefault();
-        this.props.onSubmit({task: this.props.name + ' ' + this.input.value});
+
+        this.props.onSubmit({user: this.props.name, task: this.input.value});
         this.input.value = "";
     }
 
@@ -41,15 +42,30 @@ class AddComponent extends React.Component {
     }
 }
 
+let mainReducer = (store = MainComponent.getData(), action) => {
+    switch (action.type) {
+        case 'ADD_TASK':
+            store.items.push(action.value);
+
+            return store;
+        case 'CHANGE_USER':
+            store.actual = store.users[action.value].name;
+
+            return store;
+        default:
+            return store;
+    }
+}
+
 /**
  *
  */
 class MainComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = MainComponent.getData();
+        this.state = mainReducer(undefined, {});
         this.changeName = this.changeName.bind(this);
-        this.addItem = this.addItem.bind(this);
+        this.addTask = this.addTask.bind(this);
     }
 
     static getData() {
@@ -64,12 +80,16 @@ class MainComponent extends React.Component {
         };
     }
 
-    changeName(key) {
-        this.setState({actual: this.state.users[key].name});
+    dispatch(action, value) {
+        this.setState(prevState => mainReducer(prevState, {type: action, value: value}));
     }
 
-    addItem(item) {
-        this.setState({items: this.state.items.concat([item])});
+    changeName(key) {
+        this.dispatch('CHANGE_USER', key);
+    }
+
+    addTask(item) {
+        this.dispatch('ADD_TASK', item);
     }
 
     render() {
@@ -93,11 +113,11 @@ class MainComponent extends React.Component {
                 <h2 className={this.state.items.length ? '' : 'hidden'}>Tâches :</h2>
                 <ul>
                     {this.state.items.map((item, i) => {
-                        return <li key={i}>{item.task}</li>;
+                        return <li key={i}>{item.task} pour {item.user}</li>;
                     })}
                 </ul>
 
-                <AddComponent onSubmit={this.addItem} name={this.state.actual} />
+                <AddComponent onSubmit={this.addTask} name={this.state.actual} />
             </div>
         );
     }

@@ -7,7 +7,8 @@ var
     DefaultRoute = ReactRouter.DefaultRoute,
     Link = ReactRouter.Link,
     RouteHandler = ReactRouter.RouteHandler,
-    IndexRoute = ReactRouter.IndexRoute
+    IndexRoute = ReactRouter.IndexRoute,
+    CSSTransitionGroup = React.addons.CSSTransitionGroup
 ;
 
 /**
@@ -16,12 +17,7 @@ var
 class AddComponent extends React.Component {
     constructor() {
         super();
-        this.update = this.update.bind(this);
         this.submit = this.submit.bind(this);
-    }
-
-    update() {
-        this.setState({query: this.input.value});
     }
 
     submit(e) {
@@ -112,9 +108,15 @@ class MainComponent extends React.Component {
 
                 <h2 className={this.state.items.length ? '' : 'hidden'}>Tâches :</h2>
                 <ul>
-                    {this.state.items.map((item, i) => {
-                        return <li key={i}>{item.task} pour {item.user}</li>;
-                    })}
+                    <CSSTransitionGroup
+                        className="animateExample"
+                        transitionEnterTimeout={250}
+                        transitionLeaveTimeout={250}
+                        transitionName="example">
+                        {this.state.items.map((item, i) => {
+                            return <li key={i}>{item.task} pour {item.user}</li>;
+                        })}
+                    </CSSTransitionGroup>
                 </ul>
 
                 <AddComponent onSubmit={this.addTask} name={this.state.actual} />

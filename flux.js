@@ -1,23 +1,38 @@
 var mountNode = document.querySelector('#mountNode');
 
+let reducer = (store = { value: 0 }, action) => {
+  switch (action) {
+    case 'INCREMENT':
+      store.value++;
+
+      return store;
+    case 'DECREMENT':
+      store.value--;
+
+      return store;
+    default:
+      return store;
+  }
+};
+
 class Counter extends React.Component {
   constructor() {
     super();
-    this.state = { value: 0 };
+    this.state = reducer(undefined, null);
     this.increment = this.increment.bind(this);
     this.decrement = this.decrement.bind(this);
   }
 
+  dispatch(action) {
+    this.setState(prevState => reducer(prevState, action));
+  }
+
   increment() {
-    this.setState(prevState => ({
-      value: prevState.value + 1
-    }));
+    this.dispatch('INCREMENT');
   };
 
   decrement() {
-    this.setState(prevState => ({
-      value: prevState.value - 1
-    }));
+    this.dispatch('DECREMENT');
   };
 
   render() {
